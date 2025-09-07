@@ -1,10 +1,8 @@
 # ansible
 
 ## 1
-Bla
-bla
-bla
-
+inventory
+ansible.cfg
 ## 2
 dfsgf
 dsfgfdg
