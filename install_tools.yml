@@ -1,0 +1,29 @@
+---
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: update repository index
+    apt:
+      update_cache: yes
+
+  - name: install mc
+    apt:
+      name: mc
+      state: latest
+
+  - name: install lsd
+    apt:
+      name: lsd
+      state: latest
+      
+  - name: install zsh
+    apt:
+      name: zsh
+      state: latest
+  
+  - name: install ranger
+    apt:
+      name: ranger
+      state: latest
