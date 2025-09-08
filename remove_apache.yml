@@ -13,7 +13,7 @@
       name: apache2
       state: absent
 
-  - name: add php
+  - name: remove package >> libapache2-mod-php
     apt:
-      name: remove package >> libapache2-mod-php
+      name: libapache2-mod-php
       state: absent
