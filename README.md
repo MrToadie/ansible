@@ -1,7 +1,7 @@
 # ansible
 
 ## Ansible
-inventory
-ansible.cfg
+* inventory
+* ansible.cfg
 ## Playbooks
 ### Test VMs
