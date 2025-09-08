@@ -13,11 +13,6 @@
       name: mc
       state: latest
 
-  - name: install lsd
-    apt:
-      name: lsd
-      state: latest
-      
   - name: install zsh
     apt:
       name: zsh
