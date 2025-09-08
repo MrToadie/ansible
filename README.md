@@ -1,23 +1,7 @@
 # ansible
 
-## 1
-Bla
-bla
-bla
-
-## 2
-dfsgf
-dsfgfdg
-sdfg
-### 2.1
-sdfsdf
-sdfsd
-### 2.2
-sdafsdaf
-sadfsdf
-dsfasdf
-sadfsda
-dsaf
-## 3
-asdfsda
-asdfdf
+## Ansible
+* inventory
+* ansible.cfg
+## Playbooks
+### Test VMs
