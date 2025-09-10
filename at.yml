@@ -1,0 +1,10 @@
+---
+
+- hosts: all
+  become: true
+  tasks:
+
+- name: Install package foo from repo
+  pacman:
+    name: mc
+    state: present

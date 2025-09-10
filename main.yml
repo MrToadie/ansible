@@ -1,0 +1,7 @@
+---
+- hosts: 192.168.122.72
+  tasks:
+  - name: Install a package
+    community.general.pacman:
+      name: neofetch
+      state: present
