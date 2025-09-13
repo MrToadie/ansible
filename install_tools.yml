@@ -7,21 +7,15 @@
   - name: update repository index
     apt:
       update_cache: yes
-    when: ansible_distribution == "Ubuntu"
+    when: ansible_distribution in ["Debain", "Ubuntu"]
 
   - name: install mc
     apt:
-      name: mc
+      name: micro
       state: latest
-    when: ansible_distribution == "Ubuntu"
+    when: ansible_distribution in ["Debain", "Ubuntu"]
 
   - name: install python3
-    pacman:
-      name: python3
-      state: latest
-    when: ansible_distribution == "Arch"
-  
-  - name: install ranger
     apt:
-      name: ranger
+      name: python3
       state: latest
