@@ -20,3 +20,14 @@
        name: libapache2-mod-php
        state: latest
      when: ansible_distribution == "Ubuntu"
+
+   - name: update repository index
+     dnf:
+       update_cache: yes
+     when: ansible_distribution "Almalinux"
+ 
+   - name: install apache2 package
+     dnf:
+       name: apache2
+       state: latest
+     when: ansible_distribution == "Almalinux"
