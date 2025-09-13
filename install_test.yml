@@ -1,0 +1,13 @@
+---
+ 
+ - hosts: all
+   become: true
+   tasks:
+ 
+   - name: install apache & php
+     package:
+       name:
+         - mc
+         - micro
+       state: latest
+       update_cache: yes

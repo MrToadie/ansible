@@ -4,17 +4,13 @@
    become: true
    tasks:
  
-   - name: update repository index for Debain or Ubuntu
-     apt:
-       update_cache: yes
-     when: ansible_distribution in ["Debian", "Ubuntu"]
- 
-   - name: install apache2 & php package for Debian or Ubuntu
+   - name: install apache & php
      apt:
        name:
-         - apache2
-         - libapache2-mod-php
+         - "{{ apache_package }}"
+         - "{{ php_package }}"
        state: latest
+       update_cache: yes
      when: ansible_distribution in ["Debian", "Ubuntu"]
  
    - name: install some tools in Debian or Ubuntu
@@ -30,9 +26,3 @@
      dnf:
        update_cache: yes
      when: ansible_distribution "Almalinux"
- 
-   - name: install apache2 package
-     dnf:
-       name: apache2
-       state: latest
-     when: ansible_distribution == "Almalinux"
