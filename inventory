@@ -1,11 +1,18 @@
 #Ubuntu
+[web_servers]
+#192.168.122.120 apache_package=apache2 php_package=libapache2-mod-php
+192.168.122.120
+[db_servers]
+192.168.122.8
+[file_servers]
 192.168.122.15
-192.168.122.120 apache_package=apache2 php_package=libapache2-mod-php
-#192.168.122.8 apache_package=apache2 php_package=libapache2-mod-php
+
+
 #Arch
 #192.168.122.72
+
 #Debain
-192.168.122.147
+#192.168.122.147
 #Almalinux
 #192.168.122.245
 #NixOS
