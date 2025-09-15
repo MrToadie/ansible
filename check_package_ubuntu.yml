@@ -1,0 +1,20 @@
+---
+- hosts: all
+  #connection: local # When running locally
+#  remote_user: toadie
+  vars:
+    package_names:
+      - nano
+      - mc
+  tasks:
+    - name: "Check if listed package is installed or not on Debian Linux family"
+      command: dpkg-query -l "{{ item }}"
+      loop: "{{ package_names }}"
+ #     register: debian_package_check
+      when: ansible_facts['os_family'] == "Ubuntu"
+
+    - name: Install package if not present Debian
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ package_names }}"

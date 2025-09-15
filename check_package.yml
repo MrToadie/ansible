@@ -1,0 +1,36 @@
+---
+- hosts: all
+  #connection: local # When running locally
+  remote_user: toadie
+  vars:
+    package_names:
+      - nano
+      - mc
+  tasks:
+    - name: "Check if listed package is installed or not on Debian Linux family"
+      command: dpkg-query -l "{{ item }}"
+      loop: "{{ package_names }}"
+      register: debian_package_check
+      when: ansible_facts['os_family'] == "Debian"
+
+    - name: "Check if listed package is installed or not on Red Hat Linux family"
+      command: rpm -q "{{ item }}"
+      loop: "{{ package_names }}"
+      register: redhat_package_check
+      changed_when: false
+      ignore_errors: true
+      when: ansible_facts['os_family'] == "RedHat"
+
+    - name: Install package if not present Debian
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ package_names }}"
+      when: debian_package_check is failed and ansible_facts['os_family'] == "Debian"
+    
+    - name: Install package if not present RedHat
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ package_names }}"
+      when: redhat_package_check is failed and ansible_facts['os_family'] == "RedHat"
