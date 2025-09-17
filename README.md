@@ -7,8 +7,6 @@
 ### Install
 * install_apache.yml
 * install_tools.yml
-### Remove
-* remove_apache
 ### Test VMs
 
 | Name            | OS                        | IP              |
