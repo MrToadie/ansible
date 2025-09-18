@@ -16,3 +16,5 @@
 | ansible-node2   | Ubuntu Server 22.04.5 LTS | 192.168.122.120 |
 | ansible-node3   | Ubuntu Server 22.04.5 LTS | 192.168.122.8   |
 | ansible-node4   | Ubuntu Server 22.04.5 LTS | 192.168.122.72  |
+| ansible-node5   | Ubuntu Server 22.04.5 LTS | 192.168.122.72  |
+| ansible-node6   | Ubuntu Server 22.04.5 LTS | 192.168.122.72  |
