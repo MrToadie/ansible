@@ -1,0 +1,8 @@
+---
+ 
+ - hosts: all
+   become: true
+
+ - name: Reboot machine and send a message
+   reboot:
+     msg: "Rebooting machine in 5 seconds"
