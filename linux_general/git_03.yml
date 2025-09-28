@@ -5,5 +5,5 @@
    tasks:
     - git:
         repo: https://github.com/ansible/ansible-examples.git
-        dest: /src/ansible-examples
-        archive: /tmp/ansible-examples.zip
+        dest: /home/toadie/ansible-examples
+        archive: /home/toadie/ansible-examples.zip

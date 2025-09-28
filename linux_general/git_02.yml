@@ -5,5 +5,5 @@
    tasks:
     - git:
         repo: https://github.com/MrToadie/dev.git
-        dest: $HOME/dev
+        dest: /home/toadie/dev
         separate_git_dir: /home/toadie/dev.git
