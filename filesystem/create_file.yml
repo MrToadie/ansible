@@ -4,7 +4,7 @@
   vars:
   myfile: "~/example.txt"
   tasks:
-  - name: Creating an empty file
-    ansible.builtin.file:
-    path: "{{ myfile }}"
-    state: touch
+    - name: Creating an empty file
+      ansible.builtin.file:
+      path: "{{ myfile }}"
+      state: touch
