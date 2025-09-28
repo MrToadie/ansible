@@ -10,8 +10,6 @@
 192.168.122.120
 192.168.122.15
 #192.168.122.245
-[windows_servers]
-192.168.122.134
 #Arch
 #192.168.122.72
 
@@ -21,3 +19,13 @@
 #192.168.122.245
 #NixOS
 #192.168.122.238
+
+[windows]
+windows10 ansible_host=192.168.122.134
+[windows:vars]
+ansible_user=toadie
+ansible_password=avalon
+ansible_port=5986
+ansible_connection=winrm
+ansible_winrm_transport=basic
+ansible_winrm_server_cert_validation=ignore
