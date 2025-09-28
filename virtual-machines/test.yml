@@ -1,0 +1,11 @@
+---
+- name: Create a VM on KVM hosts
+  hosts: 127.0.0.1
+  connection: local
+  become: yes
+  tasks:
+    - name: Create a VM
+      virt:
+        name: myvm
+        state: running
+        xml: "{{ lookup('file', 'myvm.xml') }}"
