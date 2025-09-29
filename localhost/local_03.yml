@@ -1,0 +1,10 @@
+- name: Run a command on the Ansible host
+  hosts: localhost
+  connection: local
+  vars:
+    testfile: "~/Projects/testfile.txt"
+  tasks:
+    - name: Createing an test file
+      ansible.builtin.file:
+        path: "{{ testfile }}"
+        state: absent
