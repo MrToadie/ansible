@@ -1,0 +1,7 @@
+---
+- hosts: windows
+  tasks:
+  - name: Show WinRM configuration
+    win_shell: winrm get winrm/config/service
+    register: output
+  - debug: var=output.stdout_lines
