@@ -1,0 +1,9 @@
+- name: Run a command on the Ansible host
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Print system uptime
+      command: uptime
+      register: output
+    - debug:
+        var: output.stdout
