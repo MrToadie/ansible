@@ -22,7 +22,7 @@
 
 [windows]
 #windows10 ansible_host=192.168.122.134
-192.168.122.134
+192.168.122.96
 [windows:vars]
 ansible_user=toadie
 ansible_password=avalon

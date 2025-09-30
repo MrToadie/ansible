@@ -1,0 +1,15 @@
+---
+- hosts: windows
+  vars:
+    ansible_user: "toadie"
+    ansible_password: "avalon"
+    ansible_port: 22
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
+    ansible_ssh_retries: 3
+    ansible_shell_type: cmd
+    ansible_become_method: runas
+    ansible_become_user: "{{ ansible_user }}"
+
+  tasks:
+    - name: Run remote PowerShell Script
+      win_command: powershell.exe -ExecutionPolicy ByPass -File C:\Users\username\Desktop\neu.ps1
