@@ -1,0 +1,12 @@
+---
+- name: file module demo
+  hosts: all
+  tasks:
+    - name: Ensure MOTD file is in place
+      template:
+        src: ../templates/motd.j2
+        dest: /home/toadie/motd.txt
+    #dest: /etc/motd
+    #owner: root
+    #group: root
+    #mode: 0644
