@@ -7,6 +7,13 @@
       - nano
       - mc
   tasks:
+    - name: MOTD                                                                                                                              
+      template:                                                                                                                               
+        src: templates/motd.j2                                                                                                                
+        dest: /etc/motd                                                                                                                       
+        owner: root                                                                                                                           
+        group: root                                                                                                                           
+        mode: 0644
     - name: "Check if listed package is installed or not on Debian Linux family"
       command: dpkg-query -l "{{ item }}"
       loop: "{{ package_names }}"
