@@ -1,0 +1,15 @@
+---
+ 
+ - hosts: all
+   become: true
+   tasks:
+ 
+   - name: Installing some CLI apps
+     package:
+       name:
+         - mc
+         - duf
+         - lsd
+         - conky
+       state: latest
+       update_cache: yes

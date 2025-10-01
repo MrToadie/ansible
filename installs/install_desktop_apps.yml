@@ -1,0 +1,15 @@
+---
+ 
+ - hosts: all
+   become: true
+   tasks:
+ 
+   - name: Installing some desktop apps
+     package:
+       name:
+         - brave
+         - thunderbird
+         - obsidian
+         - backintime
+       state: latest
+       update_cache: yes
