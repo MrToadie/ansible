@@ -14,6 +14,9 @@ localhost ansible_connection=local ansible_python_interpreter="{{ansible_playboo
 192.168.122.120
 192.168.122.15
 
+[arch]
+192.168.122.106
+
 [windows]
 #windows10 ansible_host=192.168.122.134
 192.168.122.96

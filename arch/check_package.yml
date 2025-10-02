@@ -1,7 +1,7 @@
 ---
 - hosts: arch
   #connection: local # When running locally
-  #remote_user: toadie
+  remote_user: toadie
   vars:
     package_names:
       - nano
