@@ -1,0 +1,32 @@
+---
+- name: Nach‑Installations‑Check und Report per E‑Mail
+  hosts: newmachines
+  become: true
+  vars:
+    report_path: "/tmp/setup_report_{{ inventory_hostname }}.txt"
+    mail_to: "admin@example.com"
+  tasks:
+
+    - name: Liste installierter Pakete erfassen
+      shell: dpkg -l | wc -l
+      register: pkg_count
+
+    - name: Uptime erfassen
+      command: uptime -p
+      register: uptime
+
+    - name: Report zusammenbauen
+      copy:
+        dest: "{{ report_path }}"
+        content: |
+          Setup‑Report für {{ inventory_hostname }}
+          ----------------------------------------
+          Installierte Pakete: {{ pkg_count.stdout }}
+          System‑Uptime: {{ uptime.stdout }}
+
+    - name: Report per Mail senden (mailutils muss installiert sein)
+      mail:
+        host: localhost
+        to: "{{ mail_to }}"
+        subject: "Setup‑Report {{ inventory_hostname }}"
+        body: "{{ lookup('file', report_path) }}"

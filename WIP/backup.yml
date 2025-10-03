@@ -1,0 +1,28 @@
+---
+- name: Lokales Verzeichnis archivieren
+  hosts: localhost                     # läuft auf dem Steuerungs‑Rechner
+  gather_facts: false
+  vars:
+    src_dir: /home/toadie/Projects
+    backup_dir: /home/toadie/Downloads/backups
+    timestamp: "{{ lookup('pipe', 'date +%Y%m%d_%H%M%S') }}"
+    archive_name: "projekte_{{ timestamp }}.tgz"
+
+  tasks:
+    - name: Sicherstellen, dass das Backup‑Verzeichnis existiert
+      file:
+        path: "{{ backup_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Ordner in ein tar.gz‑Archiv packen
+      archive:
+        path: "{{ src_dir }}"
+        dest: "{{ backup_dir }}/{{ archive_name }}"
+        format: gz
+        remove: false               # Originale bleiben erhalten
+        mode: "0644"
+
+    - name: Kurze Rückmeldung
+      debug:
+        msg: "Backup fertig → {{ backup_dir }}/{{ archive_name }}"

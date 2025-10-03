@@ -1,0 +1,22 @@
+- hosts: docker-host
+  become: true
+  tasks:
+    - name: Container starten
+      community.docker.docker_container:
+        name: demo-app
+        image: nginx:latest
+        ports:
+          - "8080:80"
+        state: started
+
+    - name: Live‑Logs des Containers streamen (max. 30 Sekunden)
+      community.docker.docker_container_log:
+        name: demo-app
+        follow: true
+        tail: 10
+        timeout: 30
+      register: container_logs
+
+    - name: Logs ausgeben
+      debug:
+        var: container_logs.stdout_lines

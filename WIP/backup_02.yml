@@ -1,0 +1,56 @@
+---
+- name: Mehrere Verzeichnisse separat archivieren + Rotation
+  hosts: localhost
+  gather_facts: false
+  vars:
+    src_dirs:
+      - /home/toadie/Projects
+      - /home/toadie/Dokumente/Configs/
+      - /home/toadie/MailArchiv
+    backup_dir: /home/toadie/Downloads/new_back
+    timestamp: "{{ lookup('pipe','date +%Y%m%d_%H%M%S') }}"
+    keep_days: 30
+
+  tasks:
+    - name: Ziel‑Verzeichnis anlegen
+      file:
+        path: "{{ backup_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Einzel‑Archive erzeugen
+      loop: "{{ src_dirs }}"
+      loop_control:
+        loop_var: src_path
+      vars:
+        folder_name: "{{ src_path | basename }}"
+        archive_name: "{{ folder_name }}_{{ timestamp }}.tgz"
+      block:
+        - name: Archiv erstellen
+          archive:
+            path: "{{ src_path }}"
+            dest: "{{ backup_dir }}/{{ archive_name }}"
+            format: gz
+            mode: "0644"
+
+        - name: Info‑Message
+          debug:
+            msg: "✅  {{ src_path }} → {{ backup_dir }}/{{ archive_name }}"
+
+    - name: Alte Archive finden (älter als {{ keep_days }} Tage)
+      find:
+        paths: "{{ backup_dir }}"
+        patterns: "*.tgz"
+        age: "{{ keep_days }}d"
+        age_stamp: mtime
+      register: old_archives
+
+    - name: Alte Archive entfernen
+      file:
+        path: "{{ item.path }}"
+        state: absent
+      loop: "{{ old_archives.files }}"
+
+    - name: Abschließende Meldung
+      debug:
+        msg: "Backup‑Durchlauf beendet – aktuelle Archive bleiben im Verzeichnis {{ backup_dir }}."

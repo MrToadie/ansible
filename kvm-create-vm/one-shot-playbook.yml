@@ -1,0 +1,99 @@
+---
+- name: KVM‑VM mit Ansible erstellen
+  hosts: kvm-host
+  become: true
+  collections:
+    - community.libvirt
+
+  vars:
+    vm_name: testvm01
+    vm_memory_mb: 2048
+    vm_vcpu: 2
+    vm_disk_gb: 20
+    vm_iso_path: /var/lib/libvirt/images/ubuntu-22.04-live-server-amd64.iso
+    vm_os_variant: ubuntu22.04
+
+  tasks:
+    - name: Pakete installieren
+      apt:
+        name:
+          - qemu-kvm
+          - libvirt-daemon-system
+          - libvirt-clients
+          - bridge-utils
+          - virtinst
+        state: present
+        update_cache: yes
+
+    - name: libvirtd starten & aktivieren
+      service:
+        name: libvirtd
+        state: started
+        enabled: yes
+
+    - name: Default‑Pool aktivieren
+      community.libvirt.virt_pool:
+        name: default
+        state: active
+        autostart: true
+
+    - name: Netzwerk (isolated) anlegen
+      community.libvirt.virt_network:
+        name: isolated
+        state: present
+        xml: |
+          <network>
+            <name>isolated</name>
+            <bridge name='virbr0' stp='on' delay='0'/>
+            <ip address='192.168.122.1' netmask='255.255.255.0'>
+              <dhcp>
+                <range start='192.168.122.100' end='192.168.122.200'/>
+              </dhcp>
+            </ip>
+          </network>
+        autostart: true
+
+    - name: Disk‑Image anlegen
+      community.libvirt.virt_volume:
+        pool: default
+        name: "{{ vm_name }}.qcow2"
+        capacity: "{{ vm_disk_gb }}G"
+        format: qcow2
+        state: present
+
+    - name: VM definieren (nicht starten)
+      community.libvirt.virt:
+        name: "{{ vm_name }}"
+        memory: "{{ vm_memory_mb * 1024 }}"
+        vcpus: "{{ vm_vcpu }}"
+        cpu:
+          mode: host-passthrough
+        disks:
+          - name: "{{ vm_name }}.qcow2"
+            device: disk
+            type: volume
+            bus: virtio
+          - name: "{{ vm_iso_path }}"
+            device: cdrom
+            type: file
+            bus: ide
+            readonly: true
+        networks:
+          - network: isolated
+            model: virtio
+        graphics:
+          type: vnc
+          listen_type: address
+          autoport: true
+        os_type: linux
+        os_variant: "{{ vm_os_variant }}"
+        boot:
+          devices:
+            - cdrom
+            - hd
+        state: defined
+
+    - name: VM starten
+      community.libvirt.virt:
+        name: "{{ vm_name }}"
+        state: running

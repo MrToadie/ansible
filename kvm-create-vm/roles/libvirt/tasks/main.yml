@@ -1,0 +1,21 @@
+- name: Default‑Storage‑Pool aktivieren (falls nicht bereits aktiv)
+  community.libvirt.virt_pool:
+    name: default
+    state: active
+    autostart: true
+
+- name: Virt‑Netzwerk (virbr0) anlegen, wenn kein Bridge genutzt wird
+  community.libvirt.virt_network:
+    name: isolated
+    state: present
+    xml: |
+      <network>
+        <name>isolated</name>
+        <bridge name='virbr0' stp='on' delay='0'/>
+        <ip address='192.168.122.1' netmask='255.255.255.0'>
+          <dhcp>
+            <range start='192.168.122.100' end='192.168.122.200'/>
+          </dhcp>
+        </ip>
+      </network>
+    autostart: true

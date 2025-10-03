@@ -1,0 +1,36 @@
+- name: Grundpakete für KVM installieren
+  apt:
+    name:
+      - qemu-kvm
+      - libvirt-daemon-system
+      - libvirt-clients
+      - bridge-utils
+      - virtinst
+    state: present
+    update_cache: yes
+
+- name: libvirtd aktivieren und starten
+  service:
+    name: libvirtd
+    state: started
+    enabled: yes
+
+- name: Bridge‑Interface anlegen (br0)
+  # Optional – falls du ein Bridge‑Netzwerk nutzen willst
+  # Passe Namen und physikalisches Interface (eth0, enp3s0…) an
+  netplan:
+    definition:
+      network:
+        version: 2
+        renderer: networkd
+        ethernets:
+          eth0:
+            dhcp4: no
+        bridges:
+          br0:
+            interfaces: [eth0]
+            addresses: [192.168.1.10/24]
+            gateway4: 192.168.1.1
+            nameservers:
+              addresses: [8.8.8.8,8.8.4.4]
+  when: false   # ← set to true if you want netplan to manage the bridge

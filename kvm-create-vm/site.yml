@@ -1,0 +1,11 @@
+---
+- name: KVM‑Host vorbereiten und VM anlegen
+  hosts: kvm-host
+  become: true
+  collections:
+    - community.libvirt
+
+  roles:
+    - common      # Pakete, Dienste, Bridge‑Netzwerk
+    - libvirt     # libvirtd konfigurieren
+    - vm          # eigentliche VM anlegen

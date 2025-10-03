@@ -1,0 +1,59 @@
+- name: VM‑Name und Ressourcen definieren
+  set_fact:
+    vm_name: testvm01
+    vm_memory_mb: 2048
+    vm_vcpu: 2
+    vm_disk_gb: 20
+    vm_iso_path: /var/lib/libvirt/images/ubuntu-22.04-live-server-amd64.iso   # Pfad zum Installations‑ISO
+    vm_os_variant: ubuntu22.04   # siehe `osinfo-query os` für verfügbare Varianten
+
+- name: Disk‑Image für die VM anlegen (qcow2)
+  community.libvirt.virt_volume:
+    pool: default
+    name: "{{ vm_name }}.qcow2"
+    capacity: "{{ vm_disk_gb }}G"
+    format: qcow2
+    state: present
+
+- name: VM‑Definition (XML) erzeugen und anlegen
+  community.libvirt.virt:
+    name: "{{ vm_name }}"
+    memory: "{{ vm_memory_mb * 1024 }}"   # libvirt erwartet KiB
+    vcpus: "{{ vm_vcpu }}"
+    cpu:
+      mode: host-passthrough
+    disks:
+      - name: "{{ vm_name }}.qcow2"
+        device: disk
+        type: volume
+        bus: virtio
+        # optional: size in GiB kann hier überschrieben werden
+      - name: "{{ vm_iso_path }}"
+        device: cdrom
+        type: file
+        bus: ide
+        readonly: true
+    networks:
+      - network: isolated          # oder "bridge: br0" wenn du das Bridge‑Netz nutzt
+        model: virtio
+    graphics:
+      type: vnc
+      listen_type: address
+      autoport: true
+    os_type: linux
+    os_variant: "{{ vm_os_variant }}"
+    boot:
+      devices:
+        - cdrom
+        - hd
+    state: defined                # nur definieren, nicht sofort starten
+    xml: |
+      <!-- Hier könntest du zusätzliche XML‑Abschnitte einfügen,
+           z. B. Cloud‑Init, TPM, etc. -->
+  register: vm_def
+
+- name: VM starten
+  community.libvirt.virt:
+    name: "{{ vm_name }}"
+    state: running
+    # optional: wait_for: 300   # Warte bis die VM hochgefahren ist

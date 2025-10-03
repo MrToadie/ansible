@@ -1,0 +1,34 @@
+---
+- name: Basis‑Setup für neue Maschinen
+  hosts: newmachines
+  become: true                # sudo
+  tasks:
+
+    - name: Paketlisten aktualisieren
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600   # 1 h
+
+    - name: Sicherheitsupdates automatisch installieren
+      apt:
+        upgrade: dist
+        autoremove: yes
+
+    - name: Grundlegende Werkzeuge installieren
+      apt:
+        name:
+          - curl
+          - wget
+          - git
+          - htop
+          - vim
+          - unzip
+        state: present
+
+    - name: UFW aktivieren und grundlegende Regeln setzen
+      ufw:
+        state: enabled
+        policy: deny
+        rule: allow
+        port: ssh
+        proto: tcp
