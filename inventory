@@ -4,7 +4,7 @@ localhost ansible_connection=local ansible_python_interpreter="{{ansible_playboo
 [web_servers]
 #192.168.122.120 apache_package=apache2 php_package=libapache2-mod-php
 192.168.122.120
-#192.168.122.245
+192.168.122.40
 
 [db_servers]
 192.168.122.8
