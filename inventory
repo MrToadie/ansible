@@ -8,7 +8,6 @@ localhost ansible_connection=local ansible_python_interpreter="{{ansible_playboo
 
 [db_servers]
 192.168.122.8
-#192.168.122.245
 
 [file_servers]
 192.168.122.120
