@@ -9,7 +9,7 @@
     archive_name: "projekte_{{ timestamp }}.tgz"
 
   tasks:
-    - name: Sicherstellen, dass das Backup Verzeichnis existiert
+    - name: Existiert das Backup Verzeichnis?
       file:
         path: "{{ backup_dir }}"
         state: directory
