@@ -1,0 +1,95 @@
+---
+- name: Backup – keep only the last 3 archives
+  hosts: localhost
+  gather_facts: false               # we only need the date for the timestamp
+  vars:
+    # ------------------------------------------------------------------
+    # Source directories to back up
+    # ------------------------------------------------------------------
+    src_dirs:
+      - /home/toadie/Projects
+      #- /home/toadie/Dokumente/Configs/
+      - /home/toadie/MailArchiv
+
+    # Destination for the archives
+    backup_dir: /home/toadie/Downloads/new_back
+
+    # How many recent archives to retain
+    keep_count: 3
+
+    # One timestamp for the whole run (uses built‑in fact)
+    #timestamp: "{{ ansible_date_time.iso8601_basic_short }}_{{ ansible_date_time.time | replace(':', '') }}"
+    timestamp: "{{ lookup('pipe','date +%Y_%m_%d_%H%M') }}"
+    # ------------------------------------------------------------------
+
+  pre_tasks:
+    - name: Ensure backup directory exists
+      file:
+        path: "{{ backup_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Gather date/time facts (for the timestamp)
+      setup:
+        filter: ansible_date_time
+
+  tasks:
+    # --------------------------------------------------------------
+    # Create an archive for each source directory
+    # --------------------------------------------------------------
+    - name: Create archive for each source directory
+      archive:
+        path: "{{ item }}"
+        dest: "{{ backup_dir }}/{{ item | basename }}_{{ timestamp }}.tgz"
+        format: gz
+        mode: "0644"
+      loop: "{{ src_dirs }}"
+      loop_control:
+        label: "{{ item }}"
+
+    - name: Show success messages
+      debug:
+        msg: "{{ item }} → {{ backup_dir }}/{{ item | basename }}_{{ timestamp }}.tgz"
+      loop: "{{ src_dirs }}"
+      loop_control:
+        label: "{{ item }}"
+
+    # --------------------------------------------------------------
+    # Identify archives to keep (newest keep_count) and delete the rest
+    # --------------------------------------------------------------
+    - name: List all archives in the backup directory
+      find:
+        paths: "{{ backup_dir }}"
+        patterns: "*.tgz"
+        recurse: false
+      register: all_archives
+
+    - name: Sort archives newest-first
+      set_fact:
+        sorted_archives: "{{ all_archives.files | sort(attribute='mtime', reverse=True) }}"
+
+    - name: Determine archives that exceed the keep count
+      set_fact:
+        excess_archives: "{{ sorted_archives[keep_count:] }}"   # slice from keep_count to end
+
+    - name: DEBUG – show which files would be removed (comment out when happy)
+      debug:
+        msg: "Removing {{ item.path }}"
+      loop: "{{ excess_archives }}"
+      when: excess_archives | length > 0
+
+    - name: Delete archives beyond the most recent {{ keep_count }}
+      file:
+        path: "{{ item.path }}"
+        state: absent
+      loop: "{{ excess_archives }}"
+      when: excess_archives | length > 0
+
+    # --------------------------------------------------------------
+    # Final status message
+    # --------------------------------------------------------------
+    - name: Backup run finished
+      debug:
+        msg: >
+          Backup Durchlauf beendet.
+          Die letzten {{ keep_count }} Archive verbleiben in {{ backup_dir }}.
