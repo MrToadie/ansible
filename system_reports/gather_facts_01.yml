@@ -1,0 +1,15 @@
+---
+- name: Systeminformationen sammeln
+  hosts: all      # z. B. all, webservers, 192.168.1.0/24 …
+  become: true                # falls root‑Zugriff nötig ist
+  gather_facts: true          # sammelt automatisch alle Fakten
+
+  tasks:
+    - name: Übersichtliche Ausgabe erzeugen
+      debug:
+        msg: |
+          Host: {{ inventory_hostname }}
+          CPU‑Modelle: {{ ansible_facts.processor | join(', ') }}
+          CPU‑Kerne:   {{ ansible_facts.processor_cores }}
+          RAM (MB):    {{ ansible_facts.memtotal_mb }}
+          IP‑Adresse:  {{ ansible_facts.default_ipv4.address }}

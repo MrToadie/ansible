@@ -1,0 +1,15 @@
+- name: Nur relevante Fakten sammeln
+  hosts: all
+  become: true
+  tasks:
+    - name: Fakten für CPU, RAM und Netzwerk holen
+      setup:
+        filter:
+          - "ansible_processor*"
+          - "ansible_memtotal_mb"
+          - "ansible_default_ipv4"
+      register: my_facts
+
+    - name: Ergebnis ausgeben
+      debug:
+        var: my_facts.ansible_facts

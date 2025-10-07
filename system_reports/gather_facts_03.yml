@@ -1,0 +1,22 @@
+---
+- name: Tabellarische Übersicht aller Hosts erzeugen
+  hosts: all                     # oder eine spezifische Gruppe, z. B. webservers
+  gather_facts: true            # wir brauchen die Fakten (CPU, RAM, IP)
+
+  vars:
+    # Wir bauen die Zeilen‑Variable *rows* in einem Jinja‑Block zusammen.
+    # Der Block wird einmal pro Playbook‑Durchlauf ausgewertet.
+    rows: |
+      {% for host in groups['all'] %}
+      {{ host }} | {{ hostvars[host].ansible_facts.processor_cores }} cores |
+      {{ hostvars[host].ansible_facts.memtotal_mb }} MiB RAM |
+      {{ hostvars[host].ansible_facts.default_ipv4.address }} IP
+      {% endfor %}
+
+  tasks:
+    - name: Ergebnis in einer hübschen Tabelle ausgeben
+      debug:
+        msg: |
+          Host            | Cores | RAM (MiB) | IP-Adresse
+          -------------------------------------------------
+          {{ rows }}
