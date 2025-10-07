@@ -1,0 +1,47 @@
+---
+- name: Tabellarische Übersicht aller Hosts inkl. Festplattengröße
+  hosts: all                     # ggf. auf eine Gruppe einschränken
+  gather_facts: true            # sammelt alle Standard‑Facts (inkl. ansible_devices)
+
+  vars:
+    # Hilfsfunktion: Größe aller Geräte (die ein „disk“‑Attribut besitzen) aufsummieren
+    # ansible_devices enthält für jedes Gerät ein Dictionary, z. B.:
+    #   sda: {size: "500107862016", model: "...", removable: "0", ...}
+    # Die Größe liegt als String in Bytes vor → in GiB umrechnen.
+    total_disk_gib: >-
+      {{
+        ansible_facts.devices |
+        dict2items |
+        selectattr('value.removable','equalto','0') |          # nur echte Festplatten/SSDs
+        map(attribute='value.size') |
+        map('int') |
+        sum /
+        (1024**3) |                                            # Bytes → GiB
+        round(2)
+      }}
+
+    rows: |
+      {% for host in groups['all'] %}
+      {{ host }} |
+      {{ hostvars[host].ansible_facts.processor_cores }} cores |
+      {{ hostvars[host].ansible_facts.memtotal_mb }} MiB RAM |
+      {{ hostvars[host].ansible_facts.default_ipv4.address }} IP |
+      {{ hostvars[host].total_disk_gib }} GiB HDD
+      {% endfor %}
+
+  tasks:
+    - name: Ergebnis in einer hübschen Tabelle ausgeben
+      debug:
+        msg: |
+          Host            | Cores | RAM (MiB) | IP-Adresse | HDD (GiB)
+          ------------------------------------------------------------------------
+          {{ rows }}
+
+    - name: Optional – Tabelle in eine Datei schreiben
+      copy:
+        content: |
+          Host            | Cores | RAM (MiB) | IP-Adresse | HDD (GiB)
+          ------------------------------------------------------------------------
+          {{ rows }}
+        dest: /heom/toadie/ansible/system_reports/hosts_report.txt
+        mode: '0644'
