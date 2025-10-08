@@ -1,6 +1,7 @@
 ---
 - name: Systeminformationen sammeln
   hosts: all      # z. B. all, webservers, 192.168.1.0/24 …
+  connection: local
   become: true                # falls root‑Zugriff nötig ist
   gather_facts: true          # sammelt automatisch alle Fakten
 
