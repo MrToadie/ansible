@@ -1,0 +1,29 @@
+---
+- name: Lokales Verzeichnis archivieren
+  hosts: localhost
+  gather_facts: false
+  vars:
+    local_user: "{{ lookup('env', 'USER') }}"
+    src_dir: "/home/{{ local_user }}/Downloads/Projects"
+    backup_dir: "/home/{{ local_user }}/Downloads/backups"
+    timestamp: "{{ lookup('pipe', 'date +%Y%m%d_%H%M%S') }}"
+    archive_name: "projekte_{{ timestamp }}.tgz"
+
+  tasks:
+    - name: Existiert das Backup Verzeichnis?
+      file:
+        path: "{{ backup_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Ordner in ein tar.gz Archiv packen
+      archive:
+        path: "{{ src_dir }}"
+        dest: "{{ backup_dir }}/{{ archive_name }}"
+        format: gz
+        remove: false # Original Verzeichnis nicht löschen
+        mode: "0644"
+
+    - name: Kurze Rückmeldung
+      debug:
+        msg: "Backup fertig → {{ backup_dir }}/{{ archive_name }}"
