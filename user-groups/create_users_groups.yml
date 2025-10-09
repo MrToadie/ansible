@@ -1,0 +1,30 @@
+---
+# Playbook for user & group creation
+- name: user & group creation
+  hosts: all
+  vars:
+    user1: Donald
+    user2: Dagobert
+    user3: Gooffy
+    group1: entenhausen
+    group2: geldspeicher
+  become: yes
+
+# Task for user creation
+  tasks:
+  - name: group1
+    ansible.builtin.group:
+      name: {{ group1 }}
+      state: present
+
+  - name: User creation for {{ user1 }}
+    ansible.builtin.user:
+      name: "{{ user1 }}"
+      groups: "{{ group1 group2}}"
+      state: present
+
+  - name: User creation for {{ user2 }}
+    ansible.builtin.user:
+      name: "{{ user2 }}"
+      groups: "{{ group1 group2}}"
+      state: present
