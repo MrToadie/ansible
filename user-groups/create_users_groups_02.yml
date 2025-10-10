@@ -1,0 +1,29 @@
+---
+# Playbook for user & group creation
+- name: user & group creation
+  hosts: all
+  vars:
+    usernames:
+      - donald
+      - dagobert
+      - goofy
+      - panzerknacker
+    groupnames:
+      - entenhausen
+      - geldspeicher
+      - panzerknacker
+  become: yes
+
+# Task for user creation
+  tasks:
+  - name: Add groups
+    ansible.builtin.group:
+      name: "{{ item }}""
+      state: present
+    loop: "{{ groupnames }}"
+
+  - name: User creation for user1 
+    ansible.builtin.user:
+      name: "{{ item }}"
+      state: present
+    loop: "{{ usernames }}"
