@@ -1,0 +1,29 @@
+---
+- name: file module demo
+  hosts: all
+  vars:
+    myfile: "/home/toadie/Projects/Git/ansible/tmp/example.txt"
+    logfile: "/home/toadie/Projects/Git/ansible/tmp/log.md"
+  tasks:
+    - name: Creating an empty file
+      ansible.builtin.file:
+        path: "{{ myfile }}"
+        state: touch
+    - name: log
+      ansible.builtin.file:
+        path: "{{ logfile }}"
+        state: touch
+    - name: log2
+      blockinfile:
+        path: "{{ logfile }}"
+        block: |
+          ### Logfile
+          file created @ `{{ myfile }}`
+          ## H2
+          * 1
+          * 2
+          ## H2
+          ### H3
+          #### H4
+        marker: ""
+        create: no
