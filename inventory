@@ -1,28 +1,5 @@
-[local]
-localhost ansible_connection=local ansible_python_interpreter="{{ansible_playbook_python}}"
-
-[web_servers]
-#192.168.122.120 apache_package=apache2 php_package=libapache2-mod-php
-192.168.122.120
-192.168.122.40
-
-[db_servers]
+[centos]
+192.168.122.245
 192.168.122.8
-
-[file_servers]
-192.168.122.120
 192.168.122.15
-
-[arch]
-192.168.122.106
-
-[windows]
-#windows10 ansible_host=192.168.122.134
-192.168.122.96
-[windows:vars]
-ansible_user=toadie
-ansible_password=avalon
-ansible_port=5986
-ansible_connection=winrm
-ansible_winrm_transport=basic
-#ansible_winrm_server_cert_validation=ignore
+192.168.122.120
